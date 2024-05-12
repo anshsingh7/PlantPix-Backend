@@ -31,7 +31,7 @@ const userSchema = mongoose.Schema({
         type: String,
         required: [true, "Answere is required"]
     }, role:{
-        type: String,
+        type: Number,
         required: [true, "Role is required"]
     },
     photo:{

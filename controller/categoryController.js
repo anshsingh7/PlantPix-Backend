@@ -25,7 +25,7 @@ const createCategoryController = async (req, res) => {
       });
     }
 
-    const category =await new categoryModel({ ...req.fields, slug: slugify(name) });
+    const category =await new categoryModel({ name, slug: slugify(name) });
     if (photo) {
       category.photo.data = fs.readFileSync(photo.path);
       category.photo.contentType = photo.type;
@@ -51,14 +51,31 @@ const createCategoryController = async (req, res) => {
 //update category
 const updateCategoryController = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name } = req.fields;
+    const { photo } = req.files;
+
     const { id } = req.params;
+
+    switch (true) {
+      case !name:
+        return res.status(500).send({ error: "Name is Required" });
+      case photo && photo.size > 3000000:
+        return res
+          .status(500)
+          .send({ error: "photo is Required and should be less than 1mb" });
+    }
 
     const category = await categoryModel.findByIdAndUpdate(
       id,
       { name, slug: slugify(name) },
       { new: true }
     );
+    if (photo) {
+      category.photo.data = fs.readFileSync(photo.path);
+      category.photo.contentType = photo.type;
+    }
+
+    await category.save();
 
     res.status(200).send({
       success: true,

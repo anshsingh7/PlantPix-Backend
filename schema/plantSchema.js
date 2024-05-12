@@ -5,6 +5,16 @@ const PlantsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    scientificName:{
+        type: String,
+        required: true
+    },
+    native:{
+        type: Boolean,
+    },
+    Region:{
+        type : [String],
+    },
     slug:{
         type: String,
         required: true
@@ -24,18 +34,10 @@ const PlantsSchema = new mongoose.Schema({
         type: mongoose.ObjectId,
         ref: 'Category'
     }],
-   
-    quantity:{
-        type: Number,
-        required: true
-    },
     photo:{
         data:Buffer,
         contentType: String
     },
-    shipping:{
-        type: Boolean
-    }
 },{timestamps: true})
 
 export default mongoose.model('Plants', PlantsSchema)
