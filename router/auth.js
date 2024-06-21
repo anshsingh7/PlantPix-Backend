@@ -5,6 +5,7 @@ import {
   forgotPasswordController,
   currentController,
   updateProfileController,
+  loginUserPhoto,
 } from "../controller/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authmiddleware.js";
 import formidable from 'express-formidable';
@@ -21,6 +22,7 @@ router.post("/forgot-password", forgotPasswordController);
 
 //LOGIN || Method POST
 router.post("/login", loginController);
+router.get("/loginUserPhoto/:userId", loginUserPhoto);
 
 //CURRENT || Method GET
 router.get("/current", requireSignIn, isAdmin, currentController);

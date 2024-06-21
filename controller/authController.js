@@ -9,7 +9,7 @@ dotenv.config();
 // Route : "/api/v1/register"
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, gender, answere, age, role } =
+    const { name, email, password, phone, answer, age} =
       await req.fields;
     const { photo } = await req.files;
 
@@ -22,14 +22,10 @@ export const registerController = async (req, res) => {
         return res.status(500).send({ error: "Password is required" });
       case !phone:
         return res.status(500).send({ error: "Phone is required" });
-      case !gender:
-        return res.status(500).send({ error: "Gender is required" });
       case !age:
         return res.status(500).send({ error: "Age is required" });
-      case !answere:
-        return res.status(500).send({ error: "Answere is required" });
-      case !role:
-        return res.status(500).send({ error: "Role is required" });
+      case !answer:
+        return res.status(500).send({ error: "answer is required" });
       case photo && photo.size > 3000000:
         return res
           .status(500)
@@ -51,10 +47,8 @@ export const registerController = async (req, res) => {
       email,
       password: hasedPassword,
       phone,
-      gender,
       age,
-      answere,
-      role,
+      answer,
       slug: slugify(name),
     });
 
@@ -129,6 +123,24 @@ export const loginController = async (req, res) => {
   }
 };
 
+//get login user photo
+export const loginUserPhoto =async (req,res)=>{
+  try {
+    const userPhoto = await User.findById(req.params.userId).select("photo");
+    if (userPhoto.photo.data) {
+      res.set("content-type", userPhoto.photo.contentType);
+      return res.status(200).send(userPhoto.photo.data);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while getting photo",
+      error,
+    });
+  }
+}
+
 //For Current
 export const currentController = async (req, res) => {
   res.send("protected routes");
@@ -176,7 +188,7 @@ export const forgotPasswordController = async (req, res) => {
 //Update profile
 export const updateProfileController = async (req, res) => {
   try {
-    const { name, email, password, phone, gender, answere, age, role } =
+    const { name, email, password, phone, answer, age} =
       await req.fields;
     const { photo } = await req.files;
 
@@ -189,14 +201,10 @@ export const updateProfileController = async (req, res) => {
         return res.status(500).send({ error: "Password is required" });
       case !phone:
         return res.status(500).send({ error: "Phone is required" });
-      case !gender:
-        return res.status(500).send({ error: "Gender is required" });
       case !age:
         return res.status(500).send({ error: "Age is required" });
-      case !answere:
-        return res.status(500).send({ error: "Answere is required" });
-      case !role:
-        return res.status(500).send({ error: "Age is required" });
+      case !answer:
+        return res.status(500).send({ error: "answer is required" });
       case photo && photo.size > 3000000:
         return res
           .status(500)

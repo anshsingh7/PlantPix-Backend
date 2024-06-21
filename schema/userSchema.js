@@ -21,18 +21,15 @@ const userSchema = mongoose.Schema({
         type: Number,
         unique: [true, "Phone number should be unique"],
         required: [true, "Phone is required"]
-    }, gender:{
-        type: String,
-        required: [true, "Gender is required"]
     }, age:{
         type: String,
         required: [true, "Age is required"]
-    }, answere:{
+    }, answer:{
         type: String,
         required: [true, "Answere is required"]
     }, role:{
         type: Number,
-        required: [true, "Role is required"]
+        default: 1,
     },
     photo:{
         data: Buffer,

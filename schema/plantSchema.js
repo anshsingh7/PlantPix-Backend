@@ -5,7 +5,7 @@ const PlantsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    scientificName:{
+    botanicalName:{
         type: String,
         required: true
     },
@@ -33,6 +33,14 @@ const PlantsSchema = new mongoose.Schema({
     category:[{
         type: mongoose.ObjectId,
         ref: 'Category'
+    }],
+    family:[{
+        type: mongoose.ObjectId,
+        ref: 'Family'
+    }],
+    genus:[{
+        type: mongoose.ObjectId,
+        ref: 'Genus'
     }],
     photo:{
         data:Buffer,

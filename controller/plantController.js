@@ -1,6 +1,5 @@
-import productModel from "../models/productModel";
+import Plants from "../schema/plantSchema";
 import categoryModel from "../models/categoryModel";
-import orderModel from "../models/orderModel";
 import fs from "fs";
 import slugify from "slugify";
 import dotenv from "dotenv";
@@ -33,7 +32,7 @@ const createPlantController = async (req, res) => {
           .send({ error: "photo is Required and should be less than 1mb" });
     }
 
-    const products =await new productModel({ ...req.fields, slug: slugify(name) });
+    const plants =await new Plants({ ...req.fields, slug: slugify(name) });
     if (photo) {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
@@ -58,7 +57,7 @@ const createPlantController = async (req, res) => {
 //get product
 const getPlantController = async (req, res) => {
   try {
-    const products = await productModel
+    const products = await Plants
       .find({})
       .populate("category")
       .select("-photo")
@@ -83,7 +82,7 @@ const getPlantController = async (req, res) => {
 //get single product
 const getSinglePlantController = async (req, res) => {
   try {
-    const product = await productModel
+    const product = await Plants
       .findOne({ slug: req.params.slug })
       .select("-photo")
       .populate("category");
@@ -105,7 +104,7 @@ const getSinglePlantController = async (req, res) => {
 //get photo
 const plantPhotoController = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.pid).select("photo");
+    const product = await Plants.findById(req.params.pid).select("photo");
     if (product.photo.data) {
       res.set("content-type", product.photo.contentType);
       return res.status(200).send(product.photo.data);
@@ -123,7 +122,7 @@ const plantPhotoController = async (req, res) => {
 //delete product
 const deletePlantController = async (req, res) => {
   try {
-    await productModel.findByIdAndDelete(req.params.pid).select("-photo");
+    await Plants.findByIdAndDelete(req.params.pid).select("-photo");
     res.status(200).send({
       success: true,
       message: "Product Deleted Successfully",
@@ -162,7 +161,7 @@ const updatePlantController = async (req, res) => {
           .send({ error: "photo is Required and should be less than 1mb" });
     }
 
-    const products = await productModel.findByIdAndUpdate(
+    const products = await Plants.findByIdAndUpdate(
       req.params.pid,
       { ...req.fields, slug: slugify(name) },
       { new: true }
@@ -194,7 +193,7 @@ const plantFilterController = async (req, res) => {
     let args = {};
     if (checked.length > 0) args.category = await checked;
     if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
-    const products = await productModel.find(args);
+    const products = await Plants.find(args);
     res.status(200).send({
       success: true,
       products,
@@ -212,7 +211,7 @@ const plantFilterController = async (req, res) => {
 //Product count
 const plantCountController = async (req, res) => {
   try {
-    const total = await productModel.find({}).estimatedDocumentCount();
+    const total = await Plants.find({}).estimatedDocumentCount();
     res.status(200).send({
       success: true,
       total,
@@ -232,7 +231,7 @@ const plantListController = async (req, res) => {
   try {
     const perPage = 8;
     const page = req.params.page ? req.params.page : 1;
-    const products = await productModel
+    const products = await Plants
       .find({})
       .select("-photo")
       .skip((page - 1) * perPage)
@@ -256,7 +255,7 @@ const plantListController = async (req, res) => {
 const searchPlantController = async (req, res) => {
   try {
     const { keyword } = req.params;
-    const resutls = await productModel
+    const resutls = await Plants
       .find({
         $or: [
           { name: { $regex: keyword, $options: "i" } },
@@ -279,7 +278,7 @@ const searchPlantController = async (req, res) => {
 const realtedPlantController = async (req, res) => {
   try {
     const { pid, cid } = req.params;
-    const products = await productModel
+    const products = await Plants
       .find({
         category: cid,
         _id: { $ne: pid }, //ne means "not include"
@@ -305,7 +304,7 @@ const realtedPlantController = async (req, res) => {
 const plantCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });
-    const products = await productModel.find({ category }).populate("category");
+    const products = await Plants.find({ category }).populate("category");
     res.status(200).send({
       success: true,
       category,
