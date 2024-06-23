@@ -1,5 +1,5 @@
-import Plants from "../schema/plantSchema";
-import categoryModel from "../models/categoryModel";
+import Plants from "../schema/plantSchema.js";
+import categoryModel from "../models/categoryModel.js";
 import fs from "fs";
 import slugify from "slugify";
 import dotenv from "dotenv";
