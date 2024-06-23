@@ -4,8 +4,9 @@ dotenv.config();
 
 const url = process.env.dbConnectionUrl
 
-const connectDB =async ()=>{
+const connectDB = async ()=>{
     try{
+        mongoose.set('strictQuery', false);
         const conn =await  mongoose.connect(url);
         console.log("database connected successfully");
         console.log(`host Name => ${conn.connection.host}`);
